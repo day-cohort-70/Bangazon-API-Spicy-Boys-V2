@@ -1,0 +1,35 @@
+[
+   
+    {
+        "model": "bangazonapi.store",
+        "pk": 4,
+        "fields": {
+            "description": "Fashion Forward",
+            "customer_id": 4
+        }
+    },
+    {
+        "model": "bangazonapi.store",
+        "pk": 5,
+        "fields": {
+            "description": "Book Nook",
+            "customer_id": 5
+        }
+    },
+    {
+        "model": "bangazonapi.store",
+        "pk": 6,
+        "fields": {
+            "description": "Music Mart",
+            "customer_id": 6
+        }
+    },
+    {
+        "model": "bangazonapi.store",
+        "pk": 7,
+        "fields": {
+            "description": "Sport Stuff",
+            "customer_id": 7
+        }
+    }
+]
