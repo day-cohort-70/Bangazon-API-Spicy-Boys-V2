@@ -2,7 +2,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from safedelete.models import SafeDeleteModel
 from safedelete.models import SOFT_DELETE
-from .customer import Customer
+from .store import Store
 from .productcategory import ProductCategory
 from .orderproduct import OrderProduct
 from .productrating import ProductRating
@@ -14,8 +14,8 @@ class Product(SafeDeleteModel):
     name = models.CharField(
         max_length=50,
     )
-    customer = models.ForeignKey(
-        Customer, on_delete=models.DO_NOTHING, related_name="products"
+    store = models.ForeignKey(
+        Store, on_delete=models.DO_NOTHING, related_name="products"
     )
     price = models.FloatField(
         validators=[MinValueValidator(0.00), MaxValueValidator(10000.00)],

@@ -1,0 +1,12 @@
+[
+  {"model": "bangazonapi.likedproduct", "pk": 1, "fields": {"customer_id": 4, "product_id": 1}},
+  {"model": "bangazonapi.likedproduct", "pk": 2, "fields": {"customer_id": 5, "product_id": 2}},
+  {"model": "bangazonapi.likedproduct", "pk": 3, "fields": {"customer_id": 6, "product_id": 3}},
+  {"model": "bangazonapi.likedproduct", "pk": 4, "fields": {"customer_id": 7, "product_id": 4}},
+  {"model": "bangazonapi.likedproduct", "pk": 5, "fields": {"customer_id": 4, "product_id": 5}},
+  {"model": "bangazonapi.likedproduct", "pk": 6, "fields": {"customer_id": 5, "product_id": 6}},
+  {"model": "bangazonapi.likedproduct", "pk": 7, "fields": {"customer_id": 6, "product_id": 7}},
+  {"model": "bangazonapi.likedproduct", "pk": 8, "fields": {"customer_id": 7, "product_id": 8}},
+  {"model": "bangazonapi.likedproduct", "pk": 9, "fields": {"customer_id": 4, "product_id": 9}},
+  {"model": "bangazonapi.likedproduct", "pk": 10, "fields": {"customer_id": 5, "product_id": 10}}
+]
