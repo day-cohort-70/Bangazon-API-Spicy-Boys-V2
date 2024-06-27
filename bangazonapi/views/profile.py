@@ -13,7 +13,7 @@ from bangazonapi.models import OrderProduct, Favorite, Product
 
 from bangazonapi.models import Recommendation
 from .product import ProductSerializer
-from .order import OrderSerializer
+from .order import OrderSerializer, Order
 from django.contrib.auth.models import User
 
 
@@ -252,7 +252,7 @@ class Profile(ViewSet):
             """
 
             try:
-                open_order = Order.objects.get(customer=current_user)
+                open_order = Order.objects.get(customer=current_user, payment_type=None)
             except Order.DoesNotExist as ex:
                 open_order = Order()
                 open_order.created_date = datetime.datetime.now()
