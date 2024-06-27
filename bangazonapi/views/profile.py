@@ -8,8 +8,9 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
-from bangazonapi.models import Order, Customer, Product
-from bangazonapi.models import OrderProduct, Favorite
+from bangazonapi.models import Customer
+from bangazonapi.models import OrderProduct, Favorite, Product
+
 from bangazonapi.models import Recommendation
 from .product import ProductSerializer
 from .order import OrderSerializer
@@ -85,7 +86,11 @@ class Profile(ViewSet):
         """
         try:
             # Retrieve the authenticated user
-            current_user = get_user_model().objects.get(id=request.user.id)
+            user = get_user_model().objects.get(id=request.user.id)
+            # Cast the User instance to a Customer instance
+            current_user = Customer.objects.get(user=user)
+
+            # Now, current_user is a Customer instance and can be used for operations requiring a Customer
 
             # Assuming you want to filter recommendations by the current user
             current_user.recommends = Recommendation.objects.filter(
