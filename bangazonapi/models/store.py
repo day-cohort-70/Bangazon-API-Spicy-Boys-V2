@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 
-# Import the User model if you haven't customized it
+
 
 
 class Store(models.Model):
@@ -10,3 +10,7 @@ class Store(models.Model):
     customer = models.OneToOneField(
         "customer", on_delete=models.CASCADE, related_name="store_owned"
     )
+    description = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.description
