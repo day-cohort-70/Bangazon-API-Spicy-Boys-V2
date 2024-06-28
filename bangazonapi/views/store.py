@@ -1,15 +1,23 @@
 from rest_framework.decorators import action
+from django.contrib.auth.models import User
+from rest_framework.viewsets import ViewSet
+from rest_framework.response import Response
+from rest_framework import serializers
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.parsers import MultiPartParser, FormParser
 from bangazonapi.models.recommendation import Recommendation
 import base64
 from django.core.files.base import ContentFile
 from django.http import HttpResponseServerError
-from rest_framework.viewsets import ViewSet
-from rest_framework.response import Response
-from rest_framework import serializers
 from rest_framework import status
 from bangazonapi.models import Store, Product
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework.parsers import MultiPartParser, FormParser
+from bangazonapi.models import Customer
+
+
+class StoreUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Customer
+        fields = ['user_id']
 from .product import ProductSerializer
 
 
@@ -17,6 +25,7 @@ class StoreSerializer(serializers.ModelSerializer):
     """JSON serializer for stores"""
     products = serializers.SerializerMethodField()
 
+    customer = StoreUserSerializer(many=False)
     class Meta:
         model = Store
         fields = ['id', 'name', 'description', 'customer_id', 'products']

@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 class Customer(models.Model):
 
-    user = models.OneToOneField(User, on_delete=models.DO_NOTHING,)
+    user = models.OneToOneField(User, on_delete=models.DO_NOTHING)
     phone_number = models.CharField(max_length=15)
     address = models.CharField(max_length=55)
     # store = models.ForeignKey(Store, on_delete=models.SET_NULL, null=True, related_name='owner')
