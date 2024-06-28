@@ -5,10 +5,8 @@ from django.conf import settings
 
 
 class Store(models.Model):
-    description = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    description = models.TextField(max_length=2500)
     customer_id = models.ForeignKey(
         "customer", on_delete=models.CASCADE, related_name="stores"
     )
-
-    def __str__(self):
-        return self.description

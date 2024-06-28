@@ -4,7 +4,8 @@
         "model": "bangazonapi.store",
         "pk": 4,
         "fields": {
-            "description": "Fashion Forward",
+            "name": "Fashion Forward",
+            "description": "Fashion Forward is your one stop shop for Fashion",
             "customer_id": 4
         }
     },
@@ -12,7 +13,8 @@
         "model": "bangazonapi.store",
         "pk": 5,
         "fields": {
-            "description": "Book Nook",
+            "name": "Book Nook",
+            "description": "Book Nook is your one stop shop for book",
             "customer_id": 5
         }
     },
@@ -20,7 +22,8 @@
         "model": "bangazonapi.store",
         "pk": 6,
         "fields": {
-            "description": "Music Mart",
+            "name": "Music Mart",
+            "description": "Your one stop shop for all things music",
             "customer_id": 6
         }
     },
@@ -28,7 +31,8 @@
         "model": "bangazonapi.store",
         "pk": 7,
         "fields": {
-            "description": "Sport Stuff",
+            "name": "Sport Stuff",
+            "description": "Your one stop shop for all things sports",
             "customer_id": 7
         }
     }
