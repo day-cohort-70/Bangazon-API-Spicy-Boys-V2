@@ -397,7 +397,7 @@ class RecommenderSerializer(serializers.ModelSerializer):
 class StoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
-        fields = ['id', 'description']  
+        fields = ['id', 'name', 'description']  
 
 class ProfileSerializer(serializers.ModelSerializer):
     """JSON serializer for customer profile
