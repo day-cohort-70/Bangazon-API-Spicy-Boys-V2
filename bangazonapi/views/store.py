@@ -22,15 +22,10 @@ class StoreSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description', 'customer_id', 'products']
     
     def get_products(self, obj):
-        # Check for a query parameter like ?include=products
-        print("Calling get_products")
+        # Check for a query parameter like ?expand=products
         expand = self.context.get('request').query_params.get('expand')
         if expand == "products":
-            print("include_products is true, products:")
             products = Product.objects.filter(store=obj)
-            print(products)
-            print("Self.context:")
-            print(self.context)
             return ProductSerializer(products, many=True).data
         return []
       
