@@ -48,12 +48,8 @@ class StoresViewSet(ViewSet):
     
     def retrieve(self, request, pk=None):
         try:
-            # customer = Customer.objects.get(user=request.auth.user)
+
             store = Store.objects.get(pk=pk)
-            # include_products = request.query_params.get('include_products', None)
-            # serializer_context = {'request': request}
-            # if include_products == "true":
-            #     serializer_context['include_products'] = True
 
             serializer = StoreSerializer(store, context={'request': request})
             return Response(serializer.data)
