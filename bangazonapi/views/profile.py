@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from bangazonapi.models import Customer
-from bangazonapi.models import OrderProduct, Favorite, Product
+from bangazonapi.models import OrderProduct, Favorite, Product, Store
 
 from bangazonapi.models import Recommendation
 from .product import ProductSerializer
@@ -401,6 +401,10 @@ class RecommenderSerializer(serializers.ModelSerializer):
             "customer",
         )
 
+class StoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Store
+        fields = ['id', 'name', 'description']  
 
 class ProfileSerializer(serializers.ModelSerializer):
     """JSON serializer for customer profile
@@ -408,7 +412,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     Arguments:
         serializers
     """
-
+    store_owned = StoreSerializer(read_only=True)
     user = UserSerializer(many=False)
     recommends = RecommenderSerializer(
         many=True
@@ -424,6 +428,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             "address",
             "payment_types",
             "recommends",
+            "store_owned"
         )
 
 
