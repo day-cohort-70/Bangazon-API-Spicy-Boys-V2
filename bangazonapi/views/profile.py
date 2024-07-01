@@ -15,6 +15,7 @@ from bangazonapi.models import Recommendation
 from .product import ProductSerializer
 from .order import OrderSerializer, Order
 from django.contrib.auth.models import User
+from .cart import Cart
 
 
 class Profile(ViewSet):
@@ -130,12 +131,18 @@ class Profile(ViewSet):
                 line_items = OrderProduct.objects.filter(order=open_order)
                 line_items.delete()
                 open_order.delete()
+
+                cart_viewset = Cart() # Get access to cart methods 
+                cart_viewset.request = request # gives cart the same request data the DELETE has 
+                cart_viewset.create_empty_order(request)
+
             except Order.DoesNotExist as ex:
                 return Response(
                     {"message": ex.args[0]}, status=status.HTTP_404_NOT_FOUND
                 )
 
             return Response({}, status=status.HTTP_204_NO_CONTENT)
+            
 
         if request.method == "GET":
             """
