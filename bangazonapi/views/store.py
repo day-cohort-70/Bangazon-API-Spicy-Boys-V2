@@ -12,23 +12,29 @@ from django.http import HttpResponseServerError
 from rest_framework import status
 from bangazonapi.models import Store, Product
 from bangazonapi.models import Customer
-
-
-class StoreUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Customer
-        fields = ['user_id']
 from .product import ProductSerializer
 
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name']
+
+class StoreCustomerSerializer(serializers.ModelSerializer):
+    user = UserSerializer(many=False)
+
+    class Meta:
+        model = Customer
+        fields = ['user']
 
 class StoreSerializer(serializers.ModelSerializer):
     """JSON serializer for stores"""
     products = serializers.SerializerMethodField()
+    customer = StoreCustomerSerializer(many=False)
 
-    customer = StoreUserSerializer(many=False)
     class Meta:
         model = Store
-        fields = ['id', 'name', 'description', 'customer_id', 'products']
+        fields = ['id', 'name', 'description', 'customer_id', 'products', 'customer']
     
     def get_products(self, obj):
         # Check for a query parameter like ?expand=products
