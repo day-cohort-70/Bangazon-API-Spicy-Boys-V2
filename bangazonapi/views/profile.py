@@ -86,6 +86,7 @@ class Profile(ViewSet):
             }
         """
         try:
+
             # Retrieve the authenticated user
             user = get_user_model().objects.get(id=request.user.id)
             # Cast the User instance to a Customer instance
@@ -97,6 +98,7 @@ class Profile(ViewSet):
             current_user.recommends = Recommendation.objects.filter(
                 recommender=current_user
             )
+
 
             serializer = ProfileSerializer(
                 current_user, many=False, context={"request": request}
