@@ -10,13 +10,15 @@ from bangazonapi.views import *
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'products', Products, 'product')
 router.register(r'productcategories', ProductCategories, 'productcategory')
-router.register(r'lineitems', LineItems, 'orderproduct')
+router.register(r'lineitems', LineItems, 'lineitem')
 router.register(r'customers', Customers, 'customer')
 router.register(r'users', Users, 'user')
 router.register(r'orders', Orders, 'order')
 router.register(r'cart', Cart, 'cart')
 router.register(r'paymenttypes', Payments, 'payment')
 router.register(r'profile', Profile, 'profile')
+router.register(r'stores', StoresViewSet, 'store')
+router.register(r'storeproduct', OrderProductViewSet, basename='storeproduct')
 
 
 # Wire up our API using automatic URL routing.
@@ -27,4 +29,5 @@ urlpatterns = [
     path('login', login_user),
     path('api-token-auth', obtain_auth_token),
     path('api-auth', include('rest_framework.urls', namespace='rest_framework')),
+    # path('storeproduct/<int:store_id>/', OrderProductViewSet.as_view({'get': 'retrieve'}, name='storeproduct')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

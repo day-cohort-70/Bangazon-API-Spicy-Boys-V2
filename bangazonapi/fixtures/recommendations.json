@@ -1,0 +1,12 @@
+[
+    {"model": "bangazonapi.recommendation", "pk": 1, "fields": {"customer": 4, "product": 1, "recommender": 5}},
+    {"model": "bangazonapi.recommendation", "pk": 2, "fields": {"customer": 5, "product": 2, "recommender": 4}},
+    {"model": "bangazonapi.recommendation", "pk": 3, "fields": {"customer": 6, "product": 3, "recommender": 7}},
+    {"model": "bangazonapi.recommendation", "pk": 4, "fields": {"customer": 7, "product": 4, "recommender": 6}},
+    {"model": "bangazonapi.recommendation", "pk": 5, "fields": {"customer": 4, "product": 5, "recommender": 7}},
+    {"model": "bangazonapi.recommendation", "pk": 6, "fields": {"customer": 5, "product": 6, "recommender": 6}},
+    {"model": "bangazonapi.recommendation", "pk": 7, "fields": {"customer": 6, "product": 7, "recommender": 4}},
+    {"model": "bangazonapi.recommendation", "pk": 8, "fields": {"customer": 7, "product": 8, "recommender": 5}},
+    {"model": "bangazonapi.recommendation", "pk": 9, "fields": {"customer": 4, "product": 9, "recommender": 7}},
+    {"model": "bangazonapi.recommendation", "pk": 10, "fields": {"customer": 5, "product": 10, "recommender": 6}}
+  ]

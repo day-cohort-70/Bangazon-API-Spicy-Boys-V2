@@ -1,0 +1,149 @@
+Table Customer{
+  id int [primary key]
+  phone_number int 
+  address varchar
+  user_id int 
+}
+
+Table User {
+  id int [pk]
+  username varchar
+  password password
+  first_name string
+  last_name string 
+  date_joined date
+  email varchar
+  is_active bool
+  is_staff bool 
+  is_superuser bool
+  last_login date
+  }
+
+  Table Favoritestore {
+    id pk
+    customer_id int 
+    store_id int 
+
+  }
+
+  Table Order {
+    id int 
+    created_date datetime
+    customer_id int 
+    payment_type_id int 
+
+  }
+
+  Table Orderproduct {
+    id int 
+    order_id int 
+    product_id int 
+
+  }
+
+  Table Payment {
+    id int 
+    deleted datetime 
+    deleted_by_cascade bool 
+    merchant_name string 
+    account_number int 
+    expiration_date datetime 
+    create_date date 
+    customer_id int 
+  
+  }
+
+  Table Product {
+    id int 
+    deleted date 
+    deleted_by_cascade bool 
+    name string
+    price float 
+    desription string
+    quantity int 
+    created_date datetime 
+    location string
+    image_path url
+    store_id int 
+    category_id int 
+
+
+  }
+  Table Productcategory {
+    id int 
+    name string  
+  }
+
+  Table Productrating {
+    id int 
+    rating int 
+    customer_id int 
+    product_id int 
+
+  }
+
+  
+
+  Table Recommendation{
+    id pk 
+    customer_id int_FK 
+    product_id int_FK
+    recomender_id int_FK 
+
+  } 
+
+  Table Store {
+    id int 
+    description string 
+    customer_id int_FK 
+
+  }
+
+  
+
+  Table Likedproducts {
+    id PK
+    customer_id FK
+    product_id FK
+  }
+
+Ref: "User"."id" < "Customer"."user_id"
+
+Ref: "Customer"."id" < "Order"."customer_id"
+
+Ref: "Order"."id" < "Orderproduct"."order_id"
+
+Ref: "Product"."id" < "Orderproduct"."product_id"
+
+Ref: "Order"."payment_type_id" < "Payment"."id"
+
+Ref: "Customer"."id" < "Payment"."customer_id"
+
+Ref: "Productcategory"."id" < "Product"."category_id"
+
+Ref: "Store"."id" < "Product"."store_id"
+
+Ref: "Product"."id" < "Productrating"."product_id"
+
+Ref: "Customer"."id" < "Productrating"."customer_id"
+
+
+
+Ref: "Store"."id" < "Favoritestore"."store_id"
+
+Ref: "Customer"."id" < "Recommendation"."customer_id"
+
+Ref: "Customer"."id" < "Recommendation"."recomender_id"
+
+Ref: "Product"."id" < "Recommendation"."product_id"
+
+Ref: "Customer"."id" < "Favoritestore"."customer_id"
+
+Ref: "Customer"."id" < "Store"."customer_id"
+
+
+
+
+Ref: "Product"."id" < "Likedproducts"."product_id"
+
+Ref: "Customer"."id" < "Likedproducts"."customer_id"

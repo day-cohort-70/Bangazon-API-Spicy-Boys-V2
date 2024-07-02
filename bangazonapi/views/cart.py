@@ -11,6 +11,18 @@ from .order import OrderSerializer
 class Cart(ViewSet):
     """Shopping cart for Bangazon eCommerce"""
 
+    def create_empty_order(self, request):
+        """
+        Used when the user deletes their order, this function will create a new empty order 
+        """
+
+        current_user = Customer.objects.get(user=request.auth.user)
+        new_order = Order()
+        new_order.created_date = datetime.datetime.now()
+        new_order.customer = current_user
+        new_order.save()
+        return new_order
+
     def create(self, request):
         """
         @api {POST} /cart POST new line items to cart
@@ -59,8 +71,8 @@ class Cart(ViewSet):
             order=open_order
         )[0]
         line_item.delete()
-
         return Response({}, status=status.HTTP_204_NO_CONTENT)
+        
 
 
     def list(self, request):
