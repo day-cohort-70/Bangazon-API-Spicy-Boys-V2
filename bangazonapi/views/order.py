@@ -10,6 +10,8 @@ from bangazonapi.models import Order, Payment, Customer, Product, OrderProduct
 from .product import ProductSerializer
 
 
+
+
 class OrderLineItemSerializer(serializers.HyperlinkedModelSerializer):
     """JSON serializer for line items """
 
@@ -83,6 +85,7 @@ class Orders(ViewSet):
             return HttpResponseServerError(ex)
 
     def update(self, request, pk=None):
+        from .cart import Cart # Used a lazy import to avoid "Circular import" error 
         """
         @api {PUT} /order/:id PUT new payment for order
         @apiName AddPayment
@@ -104,8 +107,16 @@ class Orders(ViewSet):
         """
         customer = Customer.objects.get(user=request.auth.user)
         order = Order.objects.get(pk=pk, customer=customer)
-        order.payment_type = request.data["payment_type"]
+
+        # Fetch the Payment instance based on the payment_type_id provided in request.data
+        payment_instance = Payment.objects.get(pk=request.data["payment_type_id"], customer=customer)
+        order.payment_type = payment_instance
+
         order.save()
+
+        cart_viewset = Cart() # Get access to cart methods 
+        cart_viewset.request = request # gives cart the same request data 
+        cart_viewset.create_empty_order(request)
 
         return Response({}, status=status.HTTP_204_NO_CONTENT)
 
