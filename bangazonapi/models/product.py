@@ -82,7 +82,7 @@ class Product(SafeDeleteModel):
             avg = total_rating / len(ratings)
             return avg
         else:
-
+            return 0
        
 
     class Meta:

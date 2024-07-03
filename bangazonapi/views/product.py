@@ -9,13 +9,25 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
-from bangazonapi.models import Product, Customer, ProductCategory
+from bangazonapi.models import Product, Customer, ProductCategory, Store
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.parsers import MultiPartParser, FormParser
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductCategory
+        fields = ['id', 'name']
+
+class StoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Store
+        fields = ['id', 'name']
 
 class ProductSerializer(serializers.ModelSerializer):
     """JSON serializer for products"""
+    category = CategorySerializer()
+    store = StoreSerializer()
+
 
     class Meta:
         model = Product
@@ -31,6 +43,8 @@ class ProductSerializer(serializers.ModelSerializer):
             "image_path",
             "average_rating",
             "can_be_rated",
+            "category",
+            "store"
         )
         depth = 1
 
@@ -109,16 +123,25 @@ class Products(ViewSet):
 
         product_category = ProductCategory.objects.get(pk=request.data["category_id"])
         new_product.category = product_category
+        product_store = Store.objects.get(pk=request.data["store_id"])
+        new_product.store = product_store
 
+        
         if "image_path" in request.data:
-            format, imgstr = request.data["image_path"].split(";base64,")
-            ext = format.split("/")[-1]
-            data = ContentFile(
-                base64.b64decode(imgstr),
-                name=f'{new_product.id}-{request.data["name"]}.{ext}',
-            )
-
-            new_product.image_path = data
+            image_path = request.data["image_path"]
+            if ";base64," in image_path:
+                format, imgstr = image_path.split(";base64,", 1)
+                ext = format.split("/")[-1]
+                data = ContentFile(
+                    base64.b64decode(imgstr),
+                    name=f'{new_product.id}-{request.data["name"]}.{ext}',
+                )
+                new_product.image_path = data
+            else:
+                new_product.image_path = request.data["image_path"]
+                # Handle the case where image_path is not in the expected format
+                print("Warning: Image path is not in the expected format.")
+                
 
         new_product.save()
 
