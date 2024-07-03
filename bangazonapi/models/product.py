@@ -83,6 +83,7 @@ class Product(SafeDeleteModel):
             return avg
         else:
             return 0
+
        
 
     class Meta:
