@@ -392,6 +392,9 @@ class ProfileProductSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "name",
+            "description",
+            "price",
+            "image_path"
         )
 
 
