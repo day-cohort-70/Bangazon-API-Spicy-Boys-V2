@@ -52,23 +52,5 @@
         "phone_number": "555-1212",
         "address": "100 Indefatiguable Way"
     }
-},
-{
-    "model": "bangazonapi.customer",
-    "pk": 8,
-    "fields": {
-        "user": 9,
-        "phone_number": "555-1212",
-        "address": "100 Highway Way"
-    }
-},
-{
-    "model": "bangazonapi.customer",
-    "pk": 9,
-    "fields": {
-        "user": 10,
-        "phone_number": "555-1212",
-        "address": "100 Hey Way"
-    }
 }
 ]

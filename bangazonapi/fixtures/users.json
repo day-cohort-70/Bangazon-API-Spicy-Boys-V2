@@ -70,41 +70,5 @@
             "groups": [],
             "user_permissions": []
         }
-    },
-    {
-        "model": "auth.user",
-        "pk": 9,
-        "fields": {
-            "password": "pbkdf2_sha256$150000$fHDURJBIASpx$trZS1MWc6YiNe5EYNBap+P+zMAwpNgNbUZH/b9bgvdw=",
-            "last_login": null,
-            "is_superuser": false,
-            "username": "bill",
-            "first_name": "Bill",
-            "last_name": "Butler",
-            "email": "bill@email.com.com",
-            "is_staff": false,
-            "is_active": true,
-            "date_joined": "2019-10-10T22:48:53.984Z",
-            "groups": [],
-            "user_permissions": []
-        }
-    },
-    {
-        "model": "auth.user",
-        "pk": 10,
-        "fields": {
-            "password": "pbkdf2_sha256$150000$fHDURJBIASpx$trZS1MWc6YiNe5EYNBap+P+zMAwpNgNbUZH/b9bgvdw=",
-            "last_login": null,
-            "is_superuser": false,
-            "username": "sally",
-            "first_name": "Sally",
-            "last_name": "Smith",
-            "email": "sally@email.com",
-            "is_staff": false,
-            "is_active": true,
-            "date_joined": "2019-10-10T22:48:53.984Z",
-            "groups": [],
-            "user_permissions": []
-        }
     }
 ]
