@@ -98,13 +98,18 @@ class Profile(ViewSet):
             current_user.recommends = Recommendation.objects.filter(
                 recommender=current_user
             )
+            recommendations_received = Recommendation.objects.filter(customer=current_user)
+            recommended_products = RecommenderSerializer(
+                recommendations_received, 
+                many=True, 
+                context={"request": request}).data
 
 
-            serializer = ProfileSerializer(
-                current_user, many=False, context={"request": request}
-            )
+            profile_serializer = ProfileSerializer(current_user, many=False, context={"request": request})
+            profile_data = profile_serializer.data
+            profile_data['recommended'] = recommended_products
 
-            return Response(serializer.data)
+            return Response(profile_data)
         except Exception as ex:
             return HttpResponseServerError(ex)
 
@@ -395,12 +400,14 @@ class RecommenderSerializer(serializers.ModelSerializer):
 
     customer = CustomerSerializer()
     product = ProfileProductSerializer()
+    recommender = CustomerSerializer()
 
     class Meta:
         model = Recommendation
         fields = (
             "product",
             "customer",
+            "recommender"
         )
 
 class StoreSerializer(serializers.ModelSerializer):
