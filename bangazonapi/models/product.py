@@ -84,8 +84,6 @@ class Product(SafeDeleteModel):
         else:
             return 0
 
-       
-
     class Meta:
         verbose_name = "product"
         verbose_name_plural = "products"
