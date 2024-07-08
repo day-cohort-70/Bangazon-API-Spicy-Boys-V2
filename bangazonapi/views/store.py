@@ -72,3 +72,25 @@ class StoresViewSet(ViewSet):
 
         except Exception as ex:
             return HttpResponseServerError(ex)
+    def create(self, request):
+        """Handle POST operations
+        
+        Returns:
+            Response -- JSON serialized store instance
+        """
+        name = request.data.get("name")
+        description = request.data.get("description")
+
+        if not name or not description:
+                return Response({"error": "Name and Description are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            customer = Customer.objects.get(user=request.auth.user)
+        except Customer.DoesNotExist:
+            return Response({"error": "Customer not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        new_store = Store(name=name, description=description, customer=customer)
+        new_store.save()
+
+        serializer = StoreSerializer(new_store, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
