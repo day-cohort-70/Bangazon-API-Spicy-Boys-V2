@@ -20,6 +20,7 @@ router.register(r'profile', Profile, 'profile')
 router.register(r'stores', StoresViewSet, 'store')
 router.register(r'storeproduct', OrderProductViewSet, basename='storeproduct')
 router.register(r'reports/favoritesellers', FavoritesReportViewSet, basename='favorites-report')
+# router.register(r'reports/favoritesellers', FavoritesReportViewSet, basename='favorites-report')
 
 
 # Wire up our API using automatic URL routing.
@@ -30,6 +31,7 @@ urlpatterns = [
     path('login', login_user),
     path('api-token-auth', obtain_auth_token),
     path('api-auth', include('rest_framework.urls', namespace='rest_framework')),
+    path('reports/favoritesellers/', FavoritesReportTemplateView.as_view(), name='favorites-report-template'),
     
     # path('storeproduct/<int:store_id>/', OrderProductViewSet.as_view({'get': 'retrieve'}, name='storeproduct')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
