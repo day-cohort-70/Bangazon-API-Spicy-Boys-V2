@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 from .customer import Customer
+from django.contrib.auth.models import User
+
 # Import the User model if you haven't customized it
 
 
