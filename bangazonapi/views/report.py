@@ -1,14 +1,7 @@
-from django.http import JsonResponse, HttpResponseRedirect
-from django.views import View
-from bangazonapi.models import Customer, Favorite
+from django.views.generic import ListView, TemplateView
+from bangazonapi.models import Customer, Favorite, Product
 from rest_framework import viewsets
 from rest_framework.response import Response
-import json
-from django.shortcuts import render
-from django.views.generic import TemplateView
-import requests
-from urllib.parse import urlencode
-
 
 class FavoritesReportViewSet(viewsets.ViewSet):
     def list(self, request):
@@ -28,23 +21,42 @@ class FavoritesReportViewSet(viewsets.ViewSet):
         }
         return Response(report_data)
 
-
 class FavoritesReportTemplateView(TemplateView):
-    template_name = '../templates/reports/favoritesellers.html'
+    template_name = 'reports/favoritesellers.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         customer_id = self.request.GET.get('customer')
+        
         if not customer_id:
             context['error'] = "Customer ID is required"
             return context
 
-        api_url = f"http://localhost:8000/reports/favoritesellers?customer={customer_id}"
-        response = requests.get(api_url)
-        if response.status_code == 200:
-            data = response.json()
-            context['customer_name'] = data.get('customer_name', '')
-            context['favorites'] = data.get('favorites', [])
-        else:
-            context['error'] = "Failed to fetch report."
+        try:
+            customer = Customer.objects.get(id=int(customer_id))
+            favorites = Favorite.objects.filter(customer=customer)
+            context['customer_name'] = f"{customer.user.first_name} {customer.user.last_name}"
+            context['favorites'] = [{"seller_name": f"{fav.seller.user.first_name} {fav.seller.user.last_name}"} for fav in favorites]
+        except (ValueError, Customer.DoesNotExist):
+            context['error'] = "Invalid customer ID"
+
         return context
+
+class ProductListView(ListView):
+    model = Product
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        price_threshold = 999
+        if self.price_filter == 'expensive':
+            return Product.objects.filter(price__gt=price_threshold)
+        else:
+            return Product.objects.filter(price__lte=price_threshold)
+
+class InexpensiveProductsView(ProductListView):
+    template_name = 'inexpensive_products.html'
+    price_filter = 'inexpensive'
+
+class ExpensiveProductsView(ProductListView):
+    template_name = 'expensive_products.html'
+    price_filter = 'expensive'

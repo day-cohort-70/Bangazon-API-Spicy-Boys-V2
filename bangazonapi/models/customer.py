@@ -28,7 +28,7 @@ class Customer(models.Model):
         self.__recommended = value
 
 
-    def generate_favorites_report(customer_id):
+    def generate_favorites_report(self, customer_id):
         # Fetch the customer's details
         customer = get_object_or_404(Customer, pk=customer_id)
         
