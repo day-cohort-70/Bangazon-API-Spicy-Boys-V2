@@ -1,0 +1,12 @@
+
+
+{% block content %}
+<h2>{{ customer_name }}</h2>
+<ul>
+{% for favorite in favorites %}
+<li>{{ favorite.seller_name }}</li>
+{% empty %}
+<p>No favorites found.</p>
+{% endfor %}
+</ul>
+{% endblock %}
