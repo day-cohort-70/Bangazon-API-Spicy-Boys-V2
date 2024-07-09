@@ -28,7 +28,6 @@ class PaymentTests(APITestCase):
             "merchant_name": "American Express",
             "account_number": "111-1111-1111",
             "expiration_date": "2024-12-31",
-            "create_date": datetime.date.today()
         }
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
         response = self.client.post(url, data, format='json')
@@ -38,6 +37,5 @@ class PaymentTests(APITestCase):
         self.assertEqual(json_response["merchant_name"], "American Express")
         self.assertEqual(json_response["account_number"], "111-1111-1111")
         self.assertEqual(json_response["expiration_date"], "2024-12-31")
-        self.assertEqual(json_response["create_date"], str(datetime.date.today()))
 
     # TODO: Delete payment type

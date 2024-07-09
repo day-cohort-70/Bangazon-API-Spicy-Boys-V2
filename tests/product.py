@@ -27,6 +27,18 @@ class ProductTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(json_response["name"], "Sporting Goods")
 
+        url = "/stores"
+        data = {"name": "Test", "Description": "Test"}
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+
+        response = self.client.post(url, data, format='json')
+        json_response = json.loads(response.content)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(json_response["name"], "Test")
+        self.assertEqual(json_response["description"], "Test")
+
+
     def test_create_product(self):
         """
         Ensure we can create a new product.
@@ -38,7 +50,8 @@ class ProductTests(APITestCase):
             "quantity": 60,
             "description": "It flies high",
             "category_id": 1,
-            "location": "Pittsburgh"
+            "location": "Pittsburgh",
+            "store_id": 1
         }
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
         response = self.client.post(url, data, format='json')
@@ -50,6 +63,8 @@ class ProductTests(APITestCase):
         self.assertEqual(json_response["quantity"], 60)
         self.assertEqual(json_response["description"], "It flies high")
         self.assertEqual(json_response["location"], "Pittsburgh")
+        self.assertEqual(json_response["store_id"], 1)
+
 
     def test_update_product(self):
         """
@@ -65,7 +80,8 @@ class ProductTests(APITestCase):
             "description": "It flies very high",
             "category_id": 1,
             "created_date": datetime.date.today(),
-            "location": "Pittsburgh"
+            "location": "Pittsburgh",
+            "store_id": 1
         }
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
         response = self.client.put(url, data, format='json')
@@ -79,6 +95,8 @@ class ProductTests(APITestCase):
         self.assertEqual(json_response["quantity"], 40)
         self.assertEqual(json_response["description"], "It flies very high")
         self.assertEqual(json_response["location"], "Pittsburgh")
+        self.assertEqual(json_response["store_id"], 1)
+
 
     def test_get_all_products(self):
         """
