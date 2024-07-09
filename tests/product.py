@@ -17,6 +17,18 @@ class ProductTests(APITestCase):
         self.token = json_response["token"]
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+        url = "/stores"
+        data = {"name": "Test", "description": "Test2", "customer_id": 1}
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+
+        response = self.client.post(url, data, format='json')
+        json_response = json.loads(response.content)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(json_response["name"], "Test")
+        self.assertEqual(json_response["description"], "Test2")
+        self.assertEqual(json_response["customer_id"], 1)
+
         url = "/productcategories"
         data = {"name": "Sporting Goods"}
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
@@ -27,16 +39,8 @@ class ProductTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(json_response["name"], "Sporting Goods")
 
-        url = "/stores"
-        data = {"name": "Test", "description": "Test"}
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
 
-        response = self.client.post(url, data, format='json')
-        json_response = json.loads(response.content)
 
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(json_response["name"], "Test")
-        self.assertEqual(json_response["description"], "Test")
 
 
     def test_create_product(self):
@@ -57,7 +61,7 @@ class ProductTests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
         response = self.client.post(url, data, format='json')
         json_response = json.loads(response.content)
-
+        print (json_response)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(json_response["name"], "Kite")
         self.assertEqual(json_response["price"], 14.99)
