@@ -1,6 +1,6 @@
 from django.http import JsonResponse, HttpResponseRedirect
 from django.views import View
-from bangazonapi.models import Customer, Favorite
+from bangazonapi.models import Customer, Favorite, Product
 from rest_framework import viewsets
 from rest_framework.response import Response
 import json
@@ -48,3 +48,14 @@ class FavoritesReportTemplateView(TemplateView):
         else:
             context['error'] = "Failed to fetch report."
         return context
+    
+
+class InexpensiveProductsView(View):
+    def get(self, request):
+        products = Product.objects.filter(price__lt=999)
+        return render(request, 'inexpensive_products.html', {'products': products})
+    
+class ExpensiveProductsView(View):
+    def get(self, request):
+        products = Product.objects.filter(price__gt=999)
+        return render(request, 'expensive_products.html', {'products': products})
