@@ -33,7 +33,8 @@ urlpatterns = [
     path('api-auth', include('rest_framework.urls', namespace='rest_framework')),
     path('reports/favoritesellers/', FavoritesReportTemplateView.as_view(), name='favorites-report-template'),
     path('inexpensiveproducts', InexpensiveProductsView.as_view(), name='inexpensive-products'),
-    path('expensiveproducts', ExpensiveProductsView.as_view(), name='expensive-products')
+    path('expensiveproducts', ExpensiveProductsView.as_view(), name='expensive-products'),
+    path('products/<int:product_id>/rate-product', rate_product, name='rate_product'),
     
     # path('storeproduct/<int:store_id>/', OrderProductViewSet.as_view({'get': 'retrieve'}, name='storeproduct')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
