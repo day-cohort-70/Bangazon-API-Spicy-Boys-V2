@@ -9,7 +9,7 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
-from bangazonapi.models import Product, Customer, ProductCategory, Store
+from bangazonapi.models import Product, Customer, ProductCategory, Store, LikedProduct
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.parsers import MultiPartParser, FormParser
 
@@ -343,3 +343,35 @@ class Products(ViewSet):
             return Response(None, status=status.HTTP_204_NO_CONTENT)
 
         return Response(None, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    
+    @action(methods=["post", "delete"], detail=True, permission_classes=[IsAuthenticatedOrReadOnly])
+    def like(self, request, pk=None):
+        customer = Customer.objects.get(user=request.auth.user)
+        product = Product.objects.get(pk=pk)
+
+        if request.method == "POST":
+            if LikedProduct.objects.filter(customer=customer, product=product).exists():
+                return Response({"detail": "Product already liked"}, status=status.HTTP_400_BAD_REQUEST)
+
+            LikedProduct.objects.create(customer=customer, product=product)
+            return Response({"detail": "Product liked"}, status=status.HTTP_201_CREATED)
+
+        elif request.method == "DELETE":
+            try:
+                liked_product = LikedProduct.objects.get(customer=customer, product=product)
+                liked_product.delete()
+                return Response({"detail": "Product unliked"}, status=status.HTTP_204_NO_CONTENT)
+            except LikedProduct.DoesNotExist:
+                return Response({"detail": "Product not liked"}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=["get"], detail=False, permission_classes=[IsAuthenticatedOrReadOnly])
+    def liked(self, request):
+        customer = Customer.objects.get(user=request.auth.user)
+        liked_products = LikedProduct.objects.filter(customer=customer).select_related('product')
+        products = [liked_product.product for liked_product in liked_products]
+
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
