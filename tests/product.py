@@ -17,6 +17,19 @@ class ProductTests(APITestCase):
         self.token = json_response["token"]
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+        url = "/stores"
+        data = {"name": "Test", "description": "Test2", "customer_id": 1}
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+
+        response = self.client.post(url, data, format='json')
+        json_response = json.loads(response.content)
+        print(json_response)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(json_response["name"], "Test")
+        self.assertEqual(json_response["description"], "Test2")
+        self.assertEqual(json_response["customer_id"], 1)
+
         url = "/productcategories"
         data = {"name": "Sporting Goods"}
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
@@ -27,10 +40,15 @@ class ProductTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(json_response["name"], "Sporting Goods")
 
+
+
+
+
     def test_create_product(self):
         """
         Ensure we can create a new product.
         """
+
         url = "/products"
         data = {
             "name": "Kite",
@@ -38,18 +56,23 @@ class ProductTests(APITestCase):
             "quantity": 60,
             "description": "It flies high",
             "category_id": 1,
-            "location": "Pittsburgh"
+            "location": "Pittsburgh",
+            "store_id": 1
         }
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
         response = self.client.post(url, data, format='json')
         json_response = json.loads(response.content)
-
+        print (json_response)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(json_response["name"], "Kite")
         self.assertEqual(json_response["price"], 14.99)
         self.assertEqual(json_response["quantity"], 60)
         self.assertEqual(json_response["description"], "It flies high")
         self.assertEqual(json_response["location"], "Pittsburgh")
+        #self.assertEqual(json_response["store_id"], 1)
+        #self.assertEqual(json_response["category_id"], 1)
+
+
 
     def test_update_product(self):
         """
@@ -79,6 +102,7 @@ class ProductTests(APITestCase):
         self.assertEqual(json_response["quantity"], 40)
         self.assertEqual(json_response["description"], "It flies very high")
         self.assertEqual(json_response["location"], "Pittsburgh")
+
 
     def test_get_all_products(self):
         """
