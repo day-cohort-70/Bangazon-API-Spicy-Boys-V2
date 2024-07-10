@@ -31,3 +31,4 @@ urlpatterns = [
     path('inexpensiveproducts', InexpensiveProductsView.as_view(), name='inexpensive-products'),
     path('expensiveproducts', ExpensiveProductsView.as_view(), name='expensive-products'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
