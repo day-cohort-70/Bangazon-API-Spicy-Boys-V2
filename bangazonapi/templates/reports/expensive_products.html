@@ -1,0 +1,16 @@
+
+
+{% block content %}
+<h2>Expensive Products</h2>
+<ul>
+{% for product in products %}
+<li>
+    <h3>{{ product.name }}</h3>
+    <p>${{ product.price }}</p>
+    <!-- Add more product details as needed -->
+</li>
+{% empty %}
+<p>No expensive products found.</p>
+{% endfor %}
+</ul>
+{% endblock %}
