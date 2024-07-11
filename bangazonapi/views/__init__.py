@@ -12,4 +12,4 @@ from .user import Users
 from .store import StoresViewSet
 from .storeproduct import OrderProductViewSet
 from .report import FavoritesReportViewSet, FavoritesReportTemplateView, ExpensiveProductsView, InexpensiveProductsView, CompletedOrdersReportTemplateView
-from .productrating import rate_product
+from .productrating import RateProduct

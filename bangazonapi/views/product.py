@@ -192,6 +192,7 @@ class Products(ViewSet):
             product = Product.objects.get(pk=pk)
             serializer = ProductSerializer(product, context={"request": request})
             return Response(serializer.data)
+        
         except Exception as ex:
             return HttpResponseServerError(ex)
 
