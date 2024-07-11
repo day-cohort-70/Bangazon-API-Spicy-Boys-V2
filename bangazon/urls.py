@@ -45,7 +45,7 @@ urlpatterns = [
     path(
         "expensiveproducts", ExpensiveProductsView.as_view(), name="expensive-products"
     ),
-    path("products/<int:product_id>/rate-product", rate_product, name="rate_product"),
+    path("products/<int:product_id>/rate-product", RateProduct.as_view(), name="rate_product"),
     path(
         "storeproduct/<int:store_id>/",
         OrderProductViewSet.as_view({"get": "retrieve"}, name="storeproduct"),
