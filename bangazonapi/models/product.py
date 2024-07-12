@@ -18,7 +18,7 @@ class Product(SafeDeleteModel):
         Store, on_delete=models.DO_NOTHING, related_name="products"
     )
     price = models.FloatField(
-        validators=[MinValueValidator(0.00), MaxValueValidator(10000.00)],
+        validators=[MinValueValidator(0.00), MaxValueValidator(17500.00)],
     )
     description = models.CharField(
         max_length=255,
@@ -76,11 +76,15 @@ class Product(SafeDeleteModel):
         ratings = ProductRating.objects.filter(product=self)
         total_rating = 0
         for rating in ratings:
-            total_rating += rating.rating
+            total_rating += rating.score
 
         if len(ratings) is not 0:
             avg = total_rating / len(ratings)
             return avg
+
+        else:
+            return 0
+
 
     class Meta:
         verbose_name = "product"

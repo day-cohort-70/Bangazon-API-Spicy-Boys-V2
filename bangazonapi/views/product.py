@@ -9,13 +9,25 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
-from bangazonapi.models import Product, Customer, ProductCategory
+from bangazonapi.models import Product, Customer, ProductCategory, Store, LikedProduct
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.parsers import MultiPartParser, FormParser
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductCategory
+        fields = ['id', 'name']
+
+class StoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Store
+        fields = ['id', 'name']
 
 class ProductSerializer(serializers.ModelSerializer):
     """JSON serializer for products"""
+    category = CategorySerializer()
+    store = StoreSerializer()
+
 
     class Meta:
         model = Product
@@ -31,6 +43,8 @@ class ProductSerializer(serializers.ModelSerializer):
             "image_path",
             "average_rating",
             "can_be_rated",
+            "category",
+            "store"
         )
         depth = 1
 
@@ -109,16 +123,25 @@ class Products(ViewSet):
 
         product_category = ProductCategory.objects.get(pk=request.data["category_id"])
         new_product.category = product_category
+        product_store = Store.objects.get(pk=request.data["store_id"])
+        new_product.store = product_store
 
+        
         if "image_path" in request.data:
-            format, imgstr = request.data["image_path"].split(";base64,")
-            ext = format.split("/")[-1]
-            data = ContentFile(
-                base64.b64decode(imgstr),
-                name=f'{new_product.id}-{request.data["name"]}.{ext}',
-            )
-
-            new_product.image_path = data
+            image_path = request.data["image_path"]
+            if ";base64," in image_path:
+                format, imgstr = image_path.split(";base64,", 1)
+                ext = format.split("/")[-1]
+                data = ContentFile(
+                    base64.b64decode(imgstr),
+                    name=f'{new_product.id}-{request.data["name"]}.{ext}',
+                )
+                new_product.image_path = data
+            else:
+                new_product.image_path = request.data["image_path"]
+                # Handle the case where image_path is not in the expected format
+                print("Warning: Image path is not in the expected format.")
+                
 
         new_product.save()
 
@@ -169,6 +192,7 @@ class Products(ViewSet):
             product = Product.objects.get(pk=pk)
             serializer = ProductSerializer(product, context={"request": request})
             return Response(serializer.data)
+        
         except Exception as ex:
             return HttpResponseServerError(ex)
 
@@ -320,3 +344,35 @@ class Products(ViewSet):
             return Response(None, status=status.HTTP_204_NO_CONTENT)
 
         return Response(None, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    
+    @action(methods=["post", "delete"], detail=True, permission_classes=[IsAuthenticatedOrReadOnly])
+    def like(self, request, pk=None):
+        customer = Customer.objects.get(user=request.auth.user)
+        product = Product.objects.get(pk=pk)
+
+        if request.method == "POST":
+            if LikedProduct.objects.filter(customer=customer, product=product).exists():
+                return Response({"detail": "Product already liked"}, status=status.HTTP_400_BAD_REQUEST)
+
+            LikedProduct.objects.create(customer=customer, product=product)
+            return Response({"detail": "Product liked"}, status=status.HTTP_201_CREATED)
+
+        elif request.method == "DELETE":
+            try:
+                liked_product = LikedProduct.objects.get(customer=customer, product=product)
+                liked_product.delete()
+                return Response({"detail": "Product unliked"}, status=status.HTTP_204_NO_CONTENT)
+            except LikedProduct.DoesNotExist:
+                return Response({"detail": "Product not liked"}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=["get"], detail=False, permission_classes=[IsAuthenticatedOrReadOnly])
+    def liked(self, request):
+        customer = Customer.objects.get(user=request.auth.user)
+        liked_products = LikedProduct.objects.filter(customer=customer).select_related('product')
+        products = [liked_product.product for liked_product in liked_products]
+
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+

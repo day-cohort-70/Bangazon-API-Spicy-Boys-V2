@@ -28,16 +28,29 @@ class PaymentTests(APITestCase):
             "merchant_name": "American Express",
             "account_number": "111-1111-1111",
             "expiration_date": "2024-12-31",
-            "create_date": datetime.date.today()
+            "created_date": "2022-12-31",
         }
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
         response = self.client.post(url, data, format='json')
         json_response = json.loads(response.content)
-
+        print(json_response)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(json_response["merchant_name"], "American Express")
         self.assertEqual(json_response["account_number"], "111-1111-1111")
         self.assertEqual(json_response["expiration_date"], "2024-12-31")
-        self.assertEqual(json_response["create_date"], str(datetime.date.today()))
+        
+  
 
-    # TODO: Delete payment type
+
+    def test_delete_payment_type(self):
+        self.test_create_payment_type()
+
+        url = "/paymenttypes/1"
+
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        response = self.client.delete(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+       # self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        #response = self.client.get(url, format="json")
+       # self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

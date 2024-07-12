@@ -98,13 +98,18 @@ class Profile(ViewSet):
             current_user.recommends = Recommendation.objects.filter(
                 recommender=current_user
             )
+            recommendations_received = Recommendation.objects.filter(customer=current_user)
+            recommended_products = RecommenderSerializer(
+                recommendations_received, 
+                many=True, 
+                context={"request": request}).data
 
 
-            serializer = ProfileSerializer(
-                current_user, many=False, context={"request": request}
-            )
+            profile_serializer = ProfileSerializer(current_user, many=False, context={"request": request})
+            profile_data = profile_serializer.data
+            profile_data['recommended'] = recommended_products
 
-            return Response(serializer.data)
+            return Response(profile_data)
         except Exception as ex:
             return HttpResponseServerError(ex)
 
@@ -130,8 +135,8 @@ class Profile(ViewSet):
             """
             try:
                 open_order = Order.objects.get(customer=current_user, payment_type=None)
-                line_items = OrderProduct.objects.filter(order=open_order)
-                line_items.delete()
+                lineitems = OrderProduct.objects.filter(order=open_order)
+                lineitems.delete()
                 open_order.delete()
 
                 cart_viewset = Cart() # Get access to cart methods 
@@ -162,9 +167,9 @@ class Profile(ViewSet):
             @apiSuccess (200) {Object} payment_type Payment Id used to complete order
             @apiSuccess (200) {String} customer URI for customer
             @apiSuccess (200) {Number} size Number of items in cart
-            @apiSuccess (200) {Object[]} line_items Line items in cart
-            @apiSuccess (200) {Number} line_items.id Line item id
-            @apiSuccess (200) {Object} line_items.product Product in cart
+            @apiSuccess (200) {Object[]} lineitems Line items in cart
+            @apiSuccess (200) {Number} lineitems.id Line item id
+            @apiSuccess (200) {Object} lineitems.product Product in cart
             @apiSuccessExample {json} Success
                 {
                     "id": 2,
@@ -172,7 +177,7 @@ class Profile(ViewSet):
                     "created_date": "2019-04-12",
                     "payment_type": null,
                     "customer": "http://localhost:8000/customers/7",
-                    "line_items": [
+                    "lineitems": [
                         {
                             "id": 4,
                             "product": {
@@ -200,17 +205,17 @@ class Profile(ViewSet):
             """
             try:
                 open_order = Order.objects.get(customer=current_user, payment_type=None)
-                line_items = OrderProduct.objects.filter(order=open_order)
-                line_items = LineItemSerializer(
-                    line_items, many=True, context={"request": request}
+                lineitems = OrderProduct.objects.filter(order=open_order)
+                lineitems = LineItemSerializer(
+                    lineitems, many=True, context={"request": request}
                 )
 
                 cart = {}
                 cart["order"] = OrderSerializer(
                     open_order, many=False, context={"request": request}
                 ).data
-                cart["order"]["line_items"] = line_items.data
-                cart["order"]["size"] = len(line_items.data)
+                cart["order"]["lineitems"] = lineitems.data
+                cart["order"]["size"] = len(lineitems.data)
 
             except Order.DoesNotExist as ex:
                 return Response(
@@ -387,6 +392,9 @@ class ProfileProductSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "name",
+            "description",
+            "price",
+            "image_path"
         )
 
 
@@ -395,18 +403,21 @@ class RecommenderSerializer(serializers.ModelSerializer):
 
     customer = CustomerSerializer()
     product = ProfileProductSerializer()
+    recommender = CustomerSerializer()
 
     class Meta:
         model = Recommendation
         fields = (
             "product",
             "customer",
+            "recommender"
         )
 
 class StoreSerializer(serializers.ModelSerializer):
+    customer = CustomerSerializer()
     class Meta:
         model = Store
-        fields = ['id', 'name', 'description']  
+        fields = ['id', 'name', 'description', 'customer_id', 'products', 'customer']  
 
 class ProfileSerializer(serializers.ModelSerializer):
     """JSON serializer for customer profile
@@ -418,7 +429,14 @@ class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=False)
     recommends = RecommenderSerializer(
         many=True
-    )  # Adjust according to your actual serializer
+    )  
+    favorites = serializers.SerializerMethodField(method_name='get_favorites')
+
+    def get_favorites(self, obj):
+        # Assuming `obj` is a Customer instance
+        favorite_stores = obj.favorites
+        # Serialize each favorite store using StoreSerializer or a custom serializer for favorites
+        return StoreSerializer(favorite_stores, many=True).data
 
     class Meta:
         model = Customer
@@ -430,7 +448,8 @@ class ProfileSerializer(serializers.ModelSerializer):
             "address",
             "payment_types",
             "recommends",
-            "store_owned"
+            "store_owned",
+            "favorites"  # Include the favorites property
         )
 
 
@@ -473,9 +492,9 @@ class FavoriteSerializer(serializers.HyperlinkedModelSerializer):
         serializers
     """
 
-    seller = FavoriteSellerSerializer(many=False)
+    store = StoreSerializer(many=False)
 
     class Meta:
         model = Favorite
-        fields = ("id", "seller")
+        fields = ("id", "store")
         depth = 2

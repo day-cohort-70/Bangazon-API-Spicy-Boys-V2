@@ -1,25 +1,40 @@
 from rest_framework.decorators import action
+from django.contrib.auth.models import User
+from rest_framework.viewsets import ViewSet
+from rest_framework.response import Response
+from rest_framework import serializers
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.parsers import MultiPartParser, FormParser
 from bangazonapi.models.recommendation import Recommendation
 import base64
 from django.core.files.base import ContentFile
 from django.http import HttpResponseServerError
-from rest_framework.viewsets import ViewSet
-from rest_framework.response import Response
-from rest_framework import serializers
 from rest_framework import status
 from bangazonapi.models import Store, Product
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework.parsers import MultiPartParser, FormParser
+from bangazonapi.models import Customer
 from .product import ProductSerializer
 
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name']
+
+class StoreCustomerSerializer(serializers.ModelSerializer):
+    user = UserSerializer(many=False)
+
+    class Meta:
+        model = Customer
+        fields = ['user']
 
 class StoreSerializer(serializers.ModelSerializer):
     """JSON serializer for stores"""
     products = serializers.SerializerMethodField()
+    customer = StoreCustomerSerializer(many=False)
 
     class Meta:
         model = Store
-        fields = ['id', 'name', 'description', 'customer_id', 'products']
+        fields = ['id', 'name', 'description', 'customer_id', 'products', 'customer']
     
     def get_products(self, obj):
         # Check for a query parameter like ?expand=products
@@ -57,3 +72,25 @@ class StoresViewSet(ViewSet):
 
         except Exception as ex:
             return HttpResponseServerError(ex)
+    def create(self, request):
+        """Handle POST operations
+        
+        Returns:
+            Response -- JSON serialized store instance
+        """
+        name = request.data.get("name")
+        description = request.data.get("description")
+
+        if not name or not description:
+                return Response({"error": "Name and Description are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            customer = Customer.objects.get(user=request.auth.user)
+        except Customer.DoesNotExist:
+            return Response({"error": "Customer not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        new_store = Store(name=name, description=description, customer=customer)
+        new_store.save()
+
+        serializer = StoreSerializer(new_store, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -5,9 +5,9 @@
         "fields": {
             "merchant_name": "Visa",
             "account_number": "24ijio68948fj8439",
-            "customer_id": "5",
-            "expiration_date": "2020-01-01",
-            "create_date": "2019-11-11"
+            "customer_id": 4,
+            "expiration_date": "2024-12-31",
+            "created_date": "2023-12-01"
         }
     },
     {
@@ -16,20 +16,53 @@
         "fields": {
             "merchant_name": "Mastercard",
             "account_number": "39j3984fj9sofi9",
-            "customer_id": "6",
-            "expiration_date": "2020-02-01",
-            "create_date": "2019-12-12"
+            "customer_id": 4,
+            "expiration_date": "2025-01-31",
+            "created_date": "2023-12-15"
         }
     },
     {
         "model": "bangazonapi.payment",
         "pk": 3,
         "fields": {
+            "merchant_name": "American Express",
+            "account_number": "amex123456789012345",
+            "customer_id": 4,
+            "expiration_date": "2025-02-28",
+            "created_date": "2023-12-20"
+        }
+    },
+    {
+        "model": "bangazonapi.payment",
+        "pk": 4,
+        "fields": {
             "merchant_name": "Visa",
-            "account_number": "fj0398fjw0g89434",
-            "customer_id": "7",
-            "expiration_date": "2020-03-01",
-            "create_date": "2019-03-11"
+            "account_number": "24ijio68948fj8439",
+            "customer_id": 4,
+            "expiration_date": "2025-03-31",
+            "created_date": "2023-12-25"
+        }
+    },
+    {
+        "model": "bangazonapi.payment",
+        "pk": 5,
+        "fields": {
+            "merchant_name": "Mastercard",
+            "account_number": "39j3984fj9sofi9",
+            "customer_id": 4,
+            "expiration_date": "2025-04-30",
+            "created_date": "2023-12-30"
+        }
+    },
+    {
+        "model": "bangazonapi.payment",
+        "pk": 6,
+        "fields": {
+            "merchant_name": "American Express",
+            "account_number": "amex123456789012345",
+            "customer_id": 4,
+            "expiration_date": "2025-05-31",
+            "created_date": "2023-12-31"
         }
     }
 ]
