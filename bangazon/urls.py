@@ -50,4 +50,5 @@ urlpatterns = [
         "storeproduct/<int:store_id>/",
         OrderProductViewSet.as_view({"get": "retrieve"}, name="storeproduct"),
     ),
+     path('reports/orders/', CompletedOrdersReportTemplateView.as_view(), name='completed_orders'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
