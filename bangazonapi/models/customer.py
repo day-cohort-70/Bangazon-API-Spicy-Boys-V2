@@ -27,6 +27,14 @@ class Customer(models.Model):
     def recommended(self, value):
         self.__recommended = value
 
+    @property
+    def favorites(self):
+        # Fetch all Favorite instances related to this customer
+        favorites = Favorite.objects.filter(customer=self)
+        # Extract the Store instances from the Favorite instances
+        favorite_stores = [favorite.store for favorite in favorites]
+        return favorite_stores
+
 
     def generate_favorites_report(self, customer_id):
         # Fetch the customer's details

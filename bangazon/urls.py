@@ -22,6 +22,7 @@ router.register(r"storeproduct", OrderProductViewSet, basename="storeproduct")
 router.register(
     r"reports/favoritesellers", FavoritesReportViewSet, basename="favorites-report"
 )
+router.register(r'favoritesellers', FavoritesViewSet, basename='favorites')
 
 
 # Wire up our API using automatic URL routing.

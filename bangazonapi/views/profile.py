@@ -414,9 +414,10 @@ class RecommenderSerializer(serializers.ModelSerializer):
         )
 
 class StoreSerializer(serializers.ModelSerializer):
+    customer = CustomerSerializer()
     class Meta:
         model = Store
-        fields = ['id', 'name', 'description']  
+        fields = ['id', 'name', 'description', 'customer_id', 'products', 'customer']  
 
 class ProfileSerializer(serializers.ModelSerializer):
     """JSON serializer for customer profile
@@ -428,7 +429,14 @@ class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=False)
     recommends = RecommenderSerializer(
         many=True
-    )  # Adjust according to your actual serializer
+    )  
+    favorites = serializers.SerializerMethodField(method_name='get_favorites')
+
+    def get_favorites(self, obj):
+        # Assuming `obj` is a Customer instance
+        favorite_stores = obj.favorites
+        # Serialize each favorite store using StoreSerializer or a custom serializer for favorites
+        return StoreSerializer(favorite_stores, many=True).data
 
     class Meta:
         model = Customer
@@ -440,7 +448,8 @@ class ProfileSerializer(serializers.ModelSerializer):
             "address",
             "payment_types",
             "recommends",
-            "store_owned"
+            "store_owned",
+            "favorites"  # Include the favorites property
         )
 
 
@@ -483,9 +492,9 @@ class FavoriteSerializer(serializers.HyperlinkedModelSerializer):
         serializers
     """
 
-    seller = FavoriteSellerSerializer(many=False)
+    store = StoreSerializer(many=False)
 
     class Meta:
         model = Favorite
-        fields = ("id", "seller")
+        fields = ("id", "store")
         depth = 2

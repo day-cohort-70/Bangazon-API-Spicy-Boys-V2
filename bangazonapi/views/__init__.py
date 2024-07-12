@@ -13,4 +13,5 @@ from .store import StoresViewSet
 from .storeproduct import OrderProductViewSet
 from .productrating import RateProduct
 from .report import FavoritesReportViewSet, FavoritesReportTemplateView, ExpensiveProductsView, InexpensiveProductsView, CompletedOrdersReportTemplateView
+from .favorite import FavoritesViewSet
 
