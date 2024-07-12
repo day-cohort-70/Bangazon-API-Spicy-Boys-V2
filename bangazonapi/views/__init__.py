@@ -11,6 +11,7 @@ from .customer import Customers
 from .user import Users
 from .store import StoresViewSet
 from .storeproduct import OrderProductViewSet
-from .report import FavoritesReportViewSet, FavoritesReportTemplateView, ExpensiveProductsView, InexpensiveProductsView, CompletedOrdersReportTemplateView
 from .productrating import RateProduct
+from .report import FavoritesReportViewSet, FavoritesReportTemplateView, ExpensiveProductsView, InexpensiveProductsView, CompletedOrdersReportTemplateView
 from .favorite import FavoritesViewSet
+
